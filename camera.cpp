@@ -40,13 +40,13 @@ public:
 private:
     const float fov = 60;
     const float aspect = 1;
-    const float znear = 1;
-    const float zfar = 10;
+    const float znear = 0;
+    const float zfar = 1000;
     float distance = 3;
     float alpha = M_PI/4;
     float beta = M_PI/4;
     float rotation_speed = 0.01;
-    float zoom_speed = 0.01;
+    float zoom_speed = 0.1;
 
     utility::Vector position;
     utility::Vector lookat;

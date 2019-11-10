@@ -7,7 +7,7 @@ static float axis_length = 1000;
 
 // grid constants:
 static float grid_size = 100;
-static float grid_step = 0.1;
+static float grid_step = 1;
 
 void draw_axis()
 {
@@ -49,32 +49,32 @@ void draw_grid()
     for(float x=-grid_size; x<grid_size; x+=grid_step)
     {
         glBegin(GL_LINES);
-            glVertex3f(x,0,0);
+            glVertex3f(x,-grid_size,0);
             glVertex3f(0,grid_size,0);
         glEnd();
 
         glBegin(GL_LINES);
-            glVertex3f(x,0,0);
+            glVertex3f(x,0,-grid_size);
             glVertex3f(0,0,grid_size);
         glEnd();
 
         glBegin(GL_LINES);
-            glVertex3f(0,x,0);
+            glVertex3f(-grid_size,x,0);
             glVertex3f(grid_size,0,0);
         glEnd();
 
         glBegin(GL_LINES);
-            glVertex3f(0,x,0);
+            glVertex3f(0,x,-grid_size);
             glVertex3f(0,0,grid_size);
         glEnd();
 
         glBegin(GL_LINES);
-            glVertex3f(0,0,x);
+            glVertex3f(0,-grid_size,x);
             glVertex3f(0,grid_size,0);
         glEnd();
 
         glBegin(GL_LINES);
-            glVertex3f(0,0,x);
+            glVertex3f(-grid_size,0,x);
             glVertex3f(grid_size,0,0);
         glEnd();
     }
