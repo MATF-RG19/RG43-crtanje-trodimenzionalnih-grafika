@@ -1,6 +1,7 @@
 # RG43-GraphingCalculator3d
 
 Controls:
+
 | Key           | Command       |
 | ------------- | ------------- |
 | w             | rotate up     |
