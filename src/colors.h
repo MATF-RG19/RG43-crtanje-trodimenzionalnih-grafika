@@ -5,3 +5,5 @@
 #define WHITE 1,1,1
 #define GRAY 0.5,0.5,0.5
 #define DARKGRAY 0.4,0.4,0.4
+#define ORANGE 1,0.65,0
+#define LIGHTBLUE 0,0.75,1

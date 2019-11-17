@@ -8,11 +8,15 @@
 #include "colors.h"
 #include "draw.cpp"
 #include "camera.cpp"
+#include "plot.cpp"
 
 static void on_keyboard(unsigned char key, int x, int y);
 static void on_display(void);
 
 Camera camera(utility::Vector(1, 1, 1), utility::Vector(0, 0, 0), utility::Vector(0, 1, 0));
+
+double range = 2.0;
+Plot plot(-range, range, -range, range, -range, range, 0.1);
 
 int main(int argc, char **argv)
 {
@@ -24,6 +28,9 @@ int main(int argc, char **argv)
 
     glutDisplayFunc(on_display);
     glutKeyboardFunc(on_keyboard);
+
+    // plot preprocess
+    plot.plot();
 
     glClearColor(GRAY, 0);
     glutMainLoop();
@@ -71,6 +78,7 @@ static void on_display(void)
     camera.update();
     draw_axis();
     draw_grid();
+    plot.show();
 
     glutSwapBuffers();
 }

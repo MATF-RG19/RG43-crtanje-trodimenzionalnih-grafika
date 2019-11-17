@@ -1,6 +1,8 @@
 #ifndef UTILITY
 #define UTILITY
 
+#define EPS 0.0001
+
 #include <iostream>
 
 namespace utility 
