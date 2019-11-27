@@ -17,49 +17,78 @@ bool sort_by_z(const utility::Vector& a, const utility::Vector& b)
 }
 
 struct Plot {
-    double xmin, xmax, ymin, ymax, zmin, zmax, step;
-    std::vector<utility::Vector> points_by_x, points_by_y;
+    const utility::Function composite_function;
+    float step;
+    size_t size;
 
-    Plot(double _xmin, double _xmax, 
-         double _ymin, double _ymax, 
-         double _zmin, double _zmax, 
-         double _step)
-        :xmin(_xmin), xmax(_xmax), ymin(_ymin), ymax(_ymax), zmin(_zmin), zmax(_zmax), step(_step)
+    std::vector<std::vector<utility::Vector> > points_by_x, points_by_y;
+    std::vector<std::vector<utility::Vector> > points;
+
+    Plot(const utility::Function _composite_function, float _step)
+        :composite_function(_composite_function), step(_step), size(_composite_function.size)
         {}
 
-    void plot() 
+    void plot()
     {
-        double z;
-        std::vector<utility::Vector> points;
+        points.clear();
+        points_by_x.clear();
+        points_by_y.clear();
+        points.resize(size);
+        points_by_x.resize(size);
+        points_by_y.resize(size);
 
-        for(double x=xmin; x<=xmax; x+=step)
+        for(auto i=0u; i<size; i++)
+            plot_function(i);
+    }
+
+    void plot_function(size_t index) 
+    {
+        std::pair<utility::Vector, utility::Vector> bound = composite_function.intervals.at(index);
+        std::function<float (float, float)> func = composite_function.functions.at(index);
+
+        float z;
+        auto min_bound = bound.first;
+        auto max_bound = bound.second;
+
+        for(float x=min_bound.x; x<=max_bound.x; x+=step)
         {
-            for(double y=ymin; y<=ymax; y+=step)
+            for(float y=min_bound.y; y<=max_bound.y; y+=step)
             {
-                z = f(x, y);
+                z = func(x, y);
                 if(z != NOPLOT)
-                    points.push_back(utility::Vector(x, y, z));
+                    points.at(index).push_back(utility::Vector(x, y, z));
             }
         }
-        points_by_x = points;
-        sort(points.begin(), points.end(), 
+        sort(points.at(index).begin(), points.at(index).end(), 
+            [](const utility::Vector& a, const utility::Vector& b)
+            {
+                return (a.x < b.x) ? true : ((a.x > b.x) ? false : (a.y < b.y));
+            });
+        points_by_x.at(index) = points.at(index);
+        sort(points.at(index).begin(), points.at(index).end(), 
             [](const utility::Vector& a, const utility::Vector& b)
             {
                 return (a.y < b.y) ? true : ((a.y > b.y) ? false : (a.x < b.x));
             });
-        points_by_y = points;
+        points_by_y.at(index) = points.at(index);
     }
 
     bool color_switch = false;
 
     void show()
     {
+        for(auto i=0u; i<size; i++)
+            show_function(i);
+    }
+
+    void show_function(size_t index)
+    {
         color_switch = false;
         glLineWidth(4);
 
         // plot y-lines
-        int index = 0;
-        while(index < points_by_x.size())
+        size_t ind = 0;
+        while(ind < points_by_x.at(index).size())
         {
             if(color_switch)
                 glColor3f(BLUE);
@@ -69,18 +98,18 @@ struct Plot {
             glBegin(GL_LINES);
             while(true)
             {
-                glVertex3f(points_by_x.at(index).x, points_by_x.at(index).z, points_by_x.at(index).y);
-                index++;
-                if(index >= points_by_x.size() || fabs(points_by_x.at(index).x == points_by_x.at(index-1).x) < EPS)
+                glVertex3f(points_by_x.at(index).at(ind).x, points_by_x.at(index).at(ind).z, points_by_x.at(index).at(ind).y);
+                ind++;
+                if(ind >= points_by_x.at(index).size() || fabs(points_by_x.at(index).at(ind).x == points_by_x.at(index).at(ind-1).x) < EPS)
                     break;
-                glVertex3f(points_by_x.at(index).x, points_by_x.at(index).z, points_by_x.at(index).y);
+                glVertex3f(points_by_x.at(index).at(ind).x, points_by_x.at(index).at(ind).z, points_by_x.at(index).at(ind).y);
             }
             glEnd();
         }
 
         // plot x-lines
-        index = 0;
-        while(index < points_by_y.size())
+        ind = 0;
+        while(ind < points_by_y.at(index).size())
         {
             if(color_switch)
                 glColor3f(BLUE);
@@ -90,19 +119,20 @@ struct Plot {
             glBegin(GL_LINES);
             while(true)
             {
-                glVertex3f(points_by_y.at(index).x, points_by_y.at(index).z, points_by_y.at(index).y);
-                index++;
-                if(index >= points_by_y.size() || fabs(points_by_y.at(index).y == points_by_y.at(index-1).y) < EPS)
+                glVertex3f(points_by_y.at(index).at(ind).x, points_by_y.at(index).at(ind).z, points_by_y.at(index).at(ind).y);
+                ind++;
+                if(ind >= points_by_y.at(index).size() || fabs(points_by_y.at(index).at(ind).y == points_by_y.at(index).at(ind-1).y) < EPS)
                     break;
-                glVertex3f(points_by_y.at(index).x, points_by_y.at(index).z, points_by_y.at(index).y);
+                glVertex3f(points_by_y.at(index).at(ind).x, points_by_y.at(index).at(ind).z, points_by_y.at(index).at(ind).y);
             }
             glEnd();
         }
     }
 
-    inline double f(double x, double y) {return sin(10*(x*x+y*y)/20);}
+    inline float f(float x, float y) {return sin(10*(x*x+y*y)/20);}
     
     // {return 2-fabs(x+y)-fabs(y-x);}
+    // {return sin(10*(x*x+y*y)/20);}
     // deo paralelobioda: {return x*x + y*y;}
     // deo kruga: {return ((1 - x*x - y*y) >= 0) ? sqrt(1 - x*x - y*y) : NOPLOT;}
 };

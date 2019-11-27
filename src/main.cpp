@@ -3,6 +3,7 @@
 #include <cmath>
 #include <iostream>
 #include <ncurses.h>
+#include <utility>
 
 #include "utility.cpp"
 #include "colors.h"
@@ -15,8 +16,19 @@ static void on_display(void);
 
 Camera camera(utility::Vector(1, 1, 1), utility::Vector(0, 0, 0), utility::Vector(0, 1, 0));
 
-double range = 2.0;
-Plot plot(-range, range, -range, range, -range, range, 0.1);
+double range = 2.001;
+utility::Vector tmp_bound_min(-range, -range, -range), tmp_bound_max(range, range, range);
+std::pair<utility::Vector, utility::Vector> tmp_pair = std::make_pair(tmp_bound_min, tmp_bound_max);
+utility::vector_intervals tmp_intervals(2, tmp_pair);
+utility::vector_functions tmp_functions{[](float x, float y){return -(4-fabs(x+y)-fabs(y-x));}
+                                        , [](float x, float y){return (4-fabs(x+y)-fabs(y-x));}};
+
+Plot plot(
+    utility::Function(
+        tmp_intervals,
+        tmp_functions
+    )
+    , 0.1);
 
 int main(int argc, char **argv)
 {
