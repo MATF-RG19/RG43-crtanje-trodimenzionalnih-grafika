@@ -98,13 +98,13 @@ struct Plot {
             else
                 glColor3f(ORANGE);
             color_switch = !color_switch;
-            
+
             glBegin(GL_LINES);
             while(true)
             {
                 glVertex3f(points_by_x.at(index).at(ind).x, points_by_x.at(index).at(ind).z, points_by_x.at(index).at(ind).y);
                 ind++;
-                if(ind >= points_by_x.at(index).size() || fabs(points_by_x.at(index).at(ind).x == points_by_x.at(index).at(ind-1).x) < EPS)
+                if(ind >= points_by_x.at(index).size() || fabs(points_by_x.at(index).at(ind).x - points_by_x.at(index).at(ind-1).x) > EPS)
                     break;
                 glVertex3f(points_by_x.at(index).at(ind).x, points_by_x.at(index).at(ind).z, points_by_x.at(index).at(ind).y);
             }
@@ -126,7 +126,7 @@ struct Plot {
             {
                 glVertex3f(points_by_y.at(index).at(ind).x, points_by_y.at(index).at(ind).z, points_by_y.at(index).at(ind).y);
                 ind++;
-                if(ind >= points_by_y.at(index).size() || fabs(points_by_y.at(index).at(ind).y == points_by_y.at(index).at(ind-1).y) < EPS)
+                if(ind >= points_by_y.at(index).size() || fabs(points_by_y.at(index).at(ind).y - points_by_y.at(index).at(ind-1).y) > EPS)
                     break;
                 glVertex3f(points_by_y.at(index).at(ind).x, points_by_y.at(index).at(ind).z, points_by_y.at(index).at(ind).y);
             }
