@@ -9,7 +9,7 @@
 #include <algorithm>
 #include <vector>
 
-#define NOPLOT 696969
+#define INFEASABLE 696969
 
 bool sort_by_z(const utility::Vector& a, const utility::Vector& b)
 {
@@ -20,6 +20,8 @@ struct Plot {
     const utility::Function composite_function;
     float step;
     size_t size;
+
+    bool color_switch = false;
 
     std::vector<std::vector<utility::Vector> > points_by_x, points_by_y;
     std::vector<std::vector<utility::Vector> > points;
@@ -50,15 +52,18 @@ struct Plot {
         auto min_bound = bound.first;
         auto max_bound = bound.second;
 
+        // Finding feasable points
         for(float x=min_bound.x; x<=max_bound.x; x+=step)
         {
             for(float y=min_bound.y; y<=max_bound.y; y+=step)
             {
                 z = func(x, y);
-                if(z != NOPLOT)
+                if(z != INFEASABLE)
                     points.at(index).push_back(utility::Vector(x, y, z));
             }
         }
+
+        // Sorting feasable points
         sort(points.at(index).begin(), points.at(index).end(), 
             [](const utility::Vector& a, const utility::Vector& b)
             {
@@ -72,8 +77,6 @@ struct Plot {
             });
         points_by_y.at(index) = points.at(index);
     }
-
-    bool color_switch = false;
 
     void show()
     {
@@ -95,6 +98,7 @@ struct Plot {
             else
                 glColor3f(ORANGE);
             color_switch = !color_switch;
+            
             glBegin(GL_LINES);
             while(true)
             {
@@ -116,6 +120,7 @@ struct Plot {
             else
                 glColor3f(ORANGE);
             color_switch = !color_switch;
+
             glBegin(GL_LINES);
             while(true)
             {
@@ -128,13 +133,6 @@ struct Plot {
             glEnd();
         }
     }
-
-    inline float f(float x, float y) {return sin(10*(x*x+y*y)/20);}
-    
-    // {return 2-fabs(x+y)-fabs(y-x);}
-    // {return sin(10*(x*x+y*y)/20);}
-    // deo paralelobioda: {return x*x + y*y;}
-    // deo kruga: {return ((1 - x*x - y*y) >= 0) ? sqrt(1 - x*x - y*y) : NOPLOT;}
 };
 
 #endif
