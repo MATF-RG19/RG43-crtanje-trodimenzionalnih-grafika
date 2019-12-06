@@ -19,9 +19,10 @@ utility::Function tmp_function(tmp_intervals, tmp_functions);
 std::vector<utility::Function> vtmps{tmp_function};
 
 utility::vector_time_functions tmp_time_functions{
-    [](float x, float y, float t){return -1/(x*x+y*y);},
-    [](float x, float y, float t){return sin(10*t*(x*x+y*y)/20);}
+    [](float x, float y, float t){return sin(10*(t*x*x+t*y*y)/20);}
 };
+
+utility::TimeFunction tmp_time_function(tmp_intervals, tmp_time_functions);
 
 #endif
 

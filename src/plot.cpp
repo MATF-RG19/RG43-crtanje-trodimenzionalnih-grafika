@@ -12,7 +12,7 @@
 #define INFEASABLE 696969
 
 struct Plot {
-    const utility::Function composite_function;
+    const utility::TimeFunction composite_function;
     float step;
     size_t size;
 
@@ -21,11 +21,11 @@ struct Plot {
     std::vector<std::vector<utility::Vector> > points_by_x, points_by_y;
     std::vector<std::vector<utility::Vector> > points;
 
-    Plot(const utility::Function _composite_function, float _step)
+    Plot(const utility::TimeFunction _composite_function, float _step)
         :composite_function(_composite_function), step(_step), size(_composite_function.size)
         {}
 
-    void plot()
+    void plot(float t)
     {
         points.clear();
         points_by_x.clear();
@@ -35,13 +35,13 @@ struct Plot {
         points_by_y.resize(size);
 
         for(auto i=0u; i<size; i++)
-            plot_function(i);
+            plot_function(i, t);
     }
 
-    void plot_function(size_t index) 
+    void plot_function(size_t index, float t) 
     {
-        std::pair<utility::Vector, utility::Vector> bound = composite_function.intervals.at(index);
-        std::function<float (float, float)> func = composite_function.functions.at(index);
+        auto bound = composite_function.intervals.at(index);
+        auto func = composite_function.functions.at(index);
 
         float z;
         auto min_bound = bound.first;
@@ -52,7 +52,7 @@ struct Plot {
         {
             for(float y=min_bound.y; y<=max_bound.y; y+=step)
             {
-                z = func(x, y);
+                z = func(x, y, t);
                 if(z != INFEASABLE)
                     points.at(index).push_back(utility::Vector(x, y, z));
             }
