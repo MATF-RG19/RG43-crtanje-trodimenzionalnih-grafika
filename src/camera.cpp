@@ -22,7 +22,7 @@ public:
         
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
-        gluPerspective(60, 1, 1, 10);
+        gluPerspective(fov, aspect, znear, zfar);
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();
         gluLookAt(position.x, position.y, position.z
@@ -41,7 +41,7 @@ private:
     const float fov = 60;
     const float aspect = 1;
     const float znear = 1;
-    const float zfar = 1;
+    const float zfar = 100;
     float distance = 3;
     float alpha = M_PI/4;
     float beta = M_PI/4;

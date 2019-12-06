@@ -11,11 +11,6 @@
 
 #define INFEASABLE 696969
 
-bool sort_by_z(const utility::Vector& a, const utility::Vector& b)
-{
-    return a.z < b.z;
-}
-
 struct Plot {
     const utility::Function composite_function;
     float step;

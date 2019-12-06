@@ -21,12 +21,26 @@ struct Vector {
 typedef std::vector<std::pair<Vector, Vector> > vector_intervals;
 typedef std::vector<std::function<float (float, float)> > vector_functions;
 
+typedef std::vector<std::function<float (float, float, float)> > vector_time_functions;
+
 struct Function {
     vector_intervals intervals;
     vector_functions functions;
     size_t size;
 
     Function(vector_intervals& _intervals, vector_functions& _functions) {
+        intervals = _intervals;
+        functions = _functions;
+        size = functions.size();
+    }
+};
+
+struct TimeFunction{
+    vector_intervals intervals;
+    vector_time_functions functions;
+    size_t size;
+
+    TimeFunction(vector_intervals& _intervals, vector_time_functions& _functions) {
         intervals = _intervals;
         functions = _functions;
         size = functions.size();
