@@ -22,7 +22,7 @@ std::vector<utility::Function> vtmps{tmp_function};
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 utility::vector_time_functions tmp_time_functions{
-    [](float x, float y, float t){return sin(10*(t*x*x+t*y*y)/20);},
+    [](float x, float y, float t){return 1 + (t/4)*(x*x + y*y)/10 - (t/4)*(cos(2*M_PI*x) + cos(2*M_PI*y));},
     [](float x, float y, float t){return -100;}
 };
 
@@ -34,3 +34,4 @@ utility::TimeFunction tmp_time_function(tmp_intervals, tmp_time_functions);
     // {return sin(10*(x*x+y*y)/20);}
     // deo paralelobioda: {return x*x + y*y;}
     // deo kruga: {return ((1 - x*x - y*y) >= 0) ? sqrt(1 - x*x - y*y) : INFEASABLE;}
+    // RASTRIGIN FUNCTION: {return 20 + (x*x + y*y) - 10*(cos(2*M_PI*x) + cos(2*M_PI*y))}
