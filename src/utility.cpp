@@ -23,6 +23,8 @@ typedef std::vector<std::function<float (float, float)> > vector_functions;
 
 typedef std::vector<std::function<float (float, float, float)> > vector_time_functions;
 
+// obsolete (for now ???)
+// ~~~~~~~~~~~~~~~~~~
 struct Function {
     vector_intervals intervals;
     vector_functions functions;
@@ -34,6 +36,7 @@ struct Function {
         size = functions.size();
     }
 };
+// ~~~~~~~~~~~~~~~~~~~
 
 struct TimeFunction{
     vector_intervals intervals;

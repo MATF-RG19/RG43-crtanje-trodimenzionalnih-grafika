@@ -18,6 +18,7 @@
 static void on_keyboard(unsigned char key, int x, int y);
 static void on_display(void);
 static void on_timer(int value);
+static void on_reshape(int width, int height);
 
 // Timer constants and values
 const float time_min_value = -1;
@@ -44,9 +45,11 @@ int main(int argc, char **argv)
 
     glutDisplayFunc(on_display);
     glutKeyboardFunc(on_keyboard);
+    glutReshapeFunc(on_reshape);
     glutTimerFunc(TIMER_INTERVAL, on_timer, TIMER_ID);
 
     glClearColor(GRAY, 0);
+    glEnable(GL_DEPTH_TEST);
     glutMainLoop();
 
     return 0;
@@ -60,27 +63,21 @@ static void on_keyboard(unsigned char key, int x, int y)
     
     case 'w': //UP
         camera.rotate_up();
-        on_display();
         break;
     case 's': //DOWN
         camera.rotate_down();
-        on_display();
         break;
     case 'd': //RIGHT
         camera.rotate_right();
-        on_display();
         break;
     case 'a': //LEFT
         camera.rotate_left();
-        on_display();
         break;
     case 'z':
         camera.zoom_in();
-        on_display();
         break;
     case 'x':
         camera.zoom_out();
-        on_display();
         break;
     }
 }
@@ -105,5 +102,11 @@ static void on_timer(int value) {
 
     glutTimerFunc(TIMER_INTERVAL, on_timer, TIMER_ID);
     on_display();
+}
+
+static void on_reshape(int width, int height)
+{
+    camera.set_view_width(width);
+    camera.set_view_height(height);
 }
 
