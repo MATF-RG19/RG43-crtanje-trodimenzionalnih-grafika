@@ -29,8 +29,15 @@ float time_sign = 1;
 float curr_time = 0;
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Camera camera(utility::Vector(1, 1, 1), utility::Vector(0, 0, 0), utility::Vector(0, 1, 0));
-Plot plot(tmp_time_function, 0.1);
+// Plot values
+bool plot_grid = true;
+// ~~~~~~~~~~~~~~~~~~~~
+
+Camera camera(utility::Vector(1, 1, 1), 
+              utility::Vector(0, 0, 0), 
+              utility::Vector(0, 1, 0));
+
+Plot plot(time_function, 0.05);
 
 int main(int argc, char **argv)
 {
@@ -49,7 +56,10 @@ int main(int argc, char **argv)
     glutTimerFunc(TIMER_INTERVAL, on_timer, TIMER_ID);
 
     glClearColor(GRAY, 0);
+
     glEnable(GL_DEPTH_TEST);
+    glEnable(GL_NORMALIZE);
+
     glutMainLoop();
 
     return 0;
@@ -79,6 +89,9 @@ static void on_keyboard(unsigned char key, int x, int y)
     case 'x':
         camera.zoom_out();
         break;
+    case 'g':
+        plot_grid = !plot_grid;
+        break;
     }
 }
 
@@ -89,7 +102,7 @@ static void on_display(void)
     camera.update();
     draw_axis();
     draw_grid();
-    plot.show();
+    plot.show(plot_grid);
 
     glutSwapBuffers();
 }

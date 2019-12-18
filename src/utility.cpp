@@ -43,10 +43,13 @@ struct TimeFunction{
     vector_time_functions functions;
     size_t size;
 
-    TimeFunction(vector_intervals& _intervals, vector_time_functions& _functions) {
-        intervals = _intervals;
+    TimeFunction(std::pair<utility::Vector, 
+                 utility::Vector>& interval, 
+                 vector_time_functions& _functions) 
+    {
         functions = _functions;
         size = functions.size();
+        intervals = vector_intervals(size, interval);
     }
 };
 

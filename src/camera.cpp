@@ -7,6 +7,16 @@
 
 #include "utility.cpp"
 
+void renderBitmapString(float x, float y, void *font, const char *string)
+{
+    const char *c;
+    glRasterPos3f(x, y, 0);
+    for (c = string; *c != '\0'; c++)
+    {
+        glutBitmapCharacter(font, *c);
+    }
+}
+
 
 class Camera {
 public:
@@ -16,6 +26,7 @@ public:
 
     void update()
     {
+        
         aspect = view_width/view_height;
 
         position.x = cos(alpha)*cos(beta)*distance;
@@ -45,11 +56,12 @@ public:
 
 private:
     const float fov = 60;
-    const float znear = 1;
+    const float znear = 0.01;
     const float zfar = 100;
     float aspect = 1;
     float view_width = 1;
     float view_height = 1;
+
     float distance = 3;
     float alpha = M_PI/4;
     float beta = M_PI/4;

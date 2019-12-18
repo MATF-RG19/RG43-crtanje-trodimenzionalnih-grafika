@@ -11,6 +11,22 @@
 
 #define INFEASABLE 696969
 
+void set_normal_and_vertex(utility::Vector& point)
+{
+    glNormal3f(
+            point.x,
+            point.z,
+            point.y
+            );
+    glVertex3f(
+            point.x,
+            point.z,
+            point.y
+            );
+}
+
+inline float color_function(float value){return (atan(10*value))/M_PI;}
+
 struct Plot {
     const utility::TimeFunction composite_function;
     float step;
@@ -22,7 +38,9 @@ struct Plot {
     std::vector<std::vector<utility::Vector> > points;
 
     Plot(const utility::TimeFunction _composite_function, float _step)
-        :composite_function(_composite_function), step(_step), size(_composite_function.size)
+        :composite_function(_composite_function), 
+                            step(_step), 
+                            size(_composite_function.size)
         {}
 
     void plot(float t)
@@ -73,35 +91,74 @@ struct Plot {
         points_by_y.at(index) = points.at(index);
     }
 
-    void show()
+    void show(bool plot_grid)
     {
         for(auto i=0u; i<size; i++)
-            show_function(i);
+            show_function(i, plot_grid);
     }
 
-    void show_function(size_t index)
+    void show_function(size_t index, bool plot_grid)
     {
-        color_switch = false;
-        glLineWidth(4);
+        std::vector<std::vector<utility::Vector> > points(1);
+        std::vector<utility::Vector> v_empty;
+        float prev_x = -100000;
+
+
+        for(int i=0; i<points_by_x.size(); i++)
+        {
+            for(int j=0; j<points_by_x.at(i).size(); j++)
+            {
+                if(fabs(points_by_x.at(i).at(j).x - prev_x) > EPS)
+                    points.push_back(v_empty);
+
+                points.back().push_back(points_by_x.at(i).at(j));
+                prev_x = points_by_x.at(i).at(j).x;
+            }
+        }
+
+        for(int i=0; i<points.size()-1; i++)
+        {
+            glBegin(GL_TRIANGLE_STRIP);
+            for(int j=0; j<points.at(i).size(); j++)
+            {
+                utility::Vector current_point = points.at(i).at(j);
+                utility::Vector next_point = points.at(i+1).at(std::min(j, (int)points.at(i+1).size()-1));
+
+                glColor3f(color_function(current_point.z), 
+                          0, 
+                          1-color_function(current_point.z));
+                set_normal_and_vertex(current_point);
+
+                glColor3f(color_function(next_point.z), 
+                         0, 
+                          1-color_function(next_point.z));
+                set_normal_and_vertex(next_point);
+            }
+            glEnd();
+        }
+
+        if(!plot_grid)
+            return;
+        glLineWidth(2);
 
         // plot y-lines
+        glColor3f(1, 1, 1);
         size_t ind = 0;
         while(ind < points_by_x.at(index).size())
         {
-            if(color_switch)
-                glColor3f(BLUE);
-            else
-                glColor3f(ORANGE);
-            color_switch = !color_switch;
-
             glBegin(GL_LINES);
             while(true)
             {
-                glVertex3f(points_by_x.at(index).at(ind).x, points_by_x.at(index).at(ind).z, points_by_x.at(index).at(ind).y);
+                glVertex3f(points_by_x.at(index).at(ind).x, 
+                           points_by_x.at(index).at(ind).z, 
+                           points_by_x.at(index).at(ind).y);
                 ind++;
-                if(ind >= points_by_x.at(index).size() || fabs(points_by_x.at(index).at(ind).x - points_by_x.at(index).at(ind-1).x) > EPS)
+                if(ind >= points_by_x.at(index).size()
+                   || fabs(points_by_x.at(index).at(ind).x - points_by_x.at(index).at(ind-1).x) > EPS)
                     break;
-                glVertex3f(points_by_x.at(index).at(ind).x, points_by_x.at(index).at(ind).z, points_by_x.at(index).at(ind).y);
+                glVertex3f(points_by_x.at(index).at(ind).x, 
+                           points_by_x.at(index).at(ind).z, 
+                           points_by_x.at(index).at(ind).y);
             }
             glEnd();
         }
@@ -110,20 +167,19 @@ struct Plot {
         ind = 0;
         while(ind < points_by_y.at(index).size())
         {
-            if(color_switch)
-                glColor3f(BLUE);
-            else
-                glColor3f(ORANGE);
-            color_switch = !color_switch;
-
             glBegin(GL_LINES);
             while(true)
             {
-                glVertex3f(points_by_y.at(index).at(ind).x, points_by_y.at(index).at(ind).z, points_by_y.at(index).at(ind).y);
+                glVertex3f(points_by_y.at(index).at(ind).x, 
+                           points_by_y.at(index).at(ind).z, 
+                           points_by_y.at(index).at(ind).y);
                 ind++;
-                if(ind >= points_by_y.at(index).size() || fabs(points_by_y.at(index).at(ind).y - points_by_y.at(index).at(ind-1).y) > EPS)
+                if(ind >= points_by_y.at(index).size()
+                    || fabs(points_by_y.at(index).at(ind).y - points_by_y.at(index).at(ind-1).y) > EPS)
                     break;
-                glVertex3f(points_by_y.at(index).at(ind).x, points_by_y.at(index).at(ind).z, points_by_y.at(index).at(ind).y);
+                glVertex3f(points_by_y.at(index).at(ind).x, 
+                           points_by_y.at(index).at(ind).z, 
+                           points_by_y.at(index).at(ind).y);
             }
             glEnd();
         }

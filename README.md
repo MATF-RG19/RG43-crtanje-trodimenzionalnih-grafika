@@ -10,5 +10,6 @@ Controls:
 | d             | rotate right  |
 | z             | zoom in       |
 | x             | zoom out      |
+| g             | grid on/off   |
 
 GraphingCalculator3d
