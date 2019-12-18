@@ -99,6 +99,17 @@ struct Plot {
 
     void show_function(size_t index, bool plot_grid)
     {
+        GLfloat function_ambient[] = {1, 0, 0, 1};
+        GLfloat function_diffuse[] = {0, 0, 0, 1};
+        GLfloat function_specular[] = {0, 0, 0, 1};
+        GLfloat function_shininess = 5;
+
+        glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, function_ambient);
+        glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, function_diffuse);
+        glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, function_specular);
+        glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, &function_shininess);
+
+
         std::vector<std::vector<utility::Vector> > points(1);
         std::vector<utility::Vector> v_empty;
         float prev_x = -100000;
@@ -124,14 +135,16 @@ struct Plot {
                 utility::Vector current_point = points.at(i).at(j);
                 utility::Vector next_point = points.at(i+1).at(std::min(j, (int)points.at(i+1).size()-1));
 
-                glColor3f(color_function(current_point.z), 
-                          0, 
-                          1-color_function(current_point.z));
+                function_ambient[0] = color_function(current_point.z);
+                function_ambient[1] = 0;
+                function_ambient[2] = 1-color_function(current_point.z);
+                glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, function_ambient);
                 set_normal_and_vertex(current_point);
 
-                glColor3f(color_function(next_point.z), 
-                         0, 
-                          1-color_function(next_point.z));
+                function_ambient[0] = color_function(next_point.z);
+                function_ambient[1] = 0;
+                function_ambient[2] = 1-color_function(next_point.z);
+                glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, function_ambient);
                 set_normal_and_vertex(next_point);
             }
             glEnd();
@@ -140,6 +153,16 @@ struct Plot {
         if(!plot_grid)
             return;
         glLineWidth(2);
+
+        GLfloat grid_ambient[] = {1, 1, 1, 1};
+        GLfloat grid_diffuse[] = {0, 0, 0, 1};
+        GLfloat grid_specular[] = {0, 0, 0, 1};
+        GLfloat grid_shininess = 5;
+
+        glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, grid_ambient);
+        glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, grid_diffuse);
+        glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, grid_specular);
+        glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, &grid_shininess);
 
         // plot y-lines
         glColor3f(1, 1, 1);

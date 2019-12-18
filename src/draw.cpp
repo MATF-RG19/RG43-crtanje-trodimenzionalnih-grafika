@@ -11,6 +11,16 @@ static float grid_step = 1;
 
 void draw_axis()
 {
+    GLfloat ambient[] = {1, 0, 0, 1};
+    GLfloat diffuse[] = {1, 0, 0, 1};
+    GLfloat specular[] = {0, 0, 0, 1};
+    GLfloat shininess = 5;
+
+    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, ambient);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, diffuse);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, specular);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, &shininess);
+
     glColor3f(RED);
 
     glLineWidth(3);
@@ -45,6 +55,16 @@ void draw_axis()
 
 void draw_grid()
 {
+    GLfloat ambient[] = {0.4, 0.4, 0.4, 1};
+    GLfloat diffuse[] = {0, 0, 0, 1};
+    GLfloat specular[] = {0, 0, 0, 1};
+    GLfloat shininess = 5;
+
+    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, ambient);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, diffuse);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, specular);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, &shininess);
+
     glColor3f(DARKGRAY);
     for(float x=-grid_size; x<grid_size; x+=grid_step)
     {
@@ -78,4 +98,19 @@ void draw_grid()
             glVertex3f(grid_size,0,0);
         glEnd();
     }
+}
+
+void set_lights()
+{
+    GLfloat position[] = {0, 1, 0, 0};
+    GLfloat ambient[] = {1, 1, 1, 1};
+    GLfloat diffuse[] = {0.3, 0.3, 0.3, 1};
+    GLfloat specular[] = {0, 0, 0, 0};
+
+    glEnable(GL_LIGHTING);
+    glEnable(GL_LIGHT0);
+    glLightfv(GL_LIGHT0, GL_POSITION, position);
+    glLightfv(GL_LIGHT0, GL_AMBIENT, ambient);
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuse);
+    glLightfv(GL_LIGHT0, GL_SPECULAR, specular);
 }
