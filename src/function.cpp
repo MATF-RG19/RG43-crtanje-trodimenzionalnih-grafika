@@ -10,18 +10,7 @@ double range = 4;
 utility::Vector tmp_bound_min(-range, -range, -range), tmp_bound_max(range, range, range);
 std::pair<utility::Vector, utility::Vector> default_interval = std::make_pair(tmp_bound_min, tmp_bound_max);
 
-// obsolete (for now ???)
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~
-utility::vector_intervals tmp_intervals(2, default_interval);
-utility::vector_functions tmp_functions{
-    [](float x, float y){return -1/(x*x+y*y);},
-    [](float x, float y){return sin(10*(x*x+y*y)/20);}
-};
-
-utility::Function tmp_function(tmp_intervals, tmp_functions);
-std::vector<utility::Function> vtmps{tmp_function};
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
+// FUNCTIONS
 utility::vector_time_functions time_functions{
     [](float x, float y, float t)
     {
@@ -30,6 +19,16 @@ utility::vector_time_functions time_functions{
 };
 
 utility::TimeFunction time_function(default_interval, time_functions);
+
+// PREDICATES
+utility::vector_time_predicates time_predicates{
+    [](float x, float y, float z, float t)
+    {
+        return (x*x+(y-2*t)*(y-2*t)+(z-2*t)*(z-2*t) <= fabs(t));
+    },
+};
+
+utility::TimePredicate time_predicate(default_interval, time_predicates);
 
 #endif
 

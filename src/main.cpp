@@ -37,7 +37,10 @@ Camera camera(utility::Vector(1, 1, 1),
               utility::Vector(0, 0, 0), 
               utility::Vector(0, 1, 0));
 
-Plot plot(time_function, 0.05);
+PlotFunction function_plotter(time_function, 0.05);
+PlotPredicate predicate_plotter(time_predicate, 0.1);
+
+static int plot_type = 1;
 
 int main(int argc, char **argv)
 {
@@ -48,7 +51,8 @@ int main(int argc, char **argv)
     glutCreateWindow(argv[0]);
 
     // plot preprocess
-    plot.plot(curr_time);
+    function_plotter.plot(curr_time);
+    predicate_plotter.plot(curr_time);
 
     glutDisplayFunc(on_display);
     glutKeyboardFunc(on_keyboard);
@@ -92,6 +96,9 @@ static void on_keyboard(unsigned char key, int x, int y)
     case 'g':
         plot_grid = !plot_grid;
         break;
+    case 'k':
+        plot_type = 1 - plot_type;
+        break;
     }
 }
 
@@ -103,13 +110,19 @@ static void on_display(void)
     set_lights();
     draw_axis();
     draw_grid();
-    plot.show(plot_grid);
+    if(plot_type == 0)
+        function_plotter.show(plot_grid);
+    else
+        predicate_plotter.show(plot_grid);
 
     glutSwapBuffers();
 }
 
 static void on_timer(int value) {
-    plot.plot(curr_time);
+    if(plot_type == 0)
+        function_plotter.plot(curr_time);
+    else
+        predicate_plotter.plot(curr_time);
     curr_time += time_sign*time_step;
     if(curr_time >= time_max_value || curr_time <= time_min_value)
         time_sign *= -1; 

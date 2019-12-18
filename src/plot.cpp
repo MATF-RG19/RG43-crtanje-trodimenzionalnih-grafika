@@ -14,20 +14,28 @@
 void set_normal_and_vertex(utility::Vector& point)
 {
     glNormal3f(
-            point.x,
-            point.z,
-            point.y
+        point.x,
+        point.z,
+        point.y
             );
     glVertex3f(
-            point.x,
-            point.z,
-            point.y
+        point.x,
+        point.z,
+        point.y
             );
+}
+
+void set_sphere(utility::Vector& point, float step)
+{
+    glPushMatrix();
+        glTranslatef(point.x, point.y, point.z);
+        glutSolidCube(step);
+    glPopMatrix();
 }
 
 inline float color_function(float value){return (atan(10*value))/M_PI;}
 
-struct Plot {
+struct PlotFunction {
     const utility::TimeFunction composite_function;
     float step;
     size_t size;
@@ -37,7 +45,7 @@ struct Plot {
     std::vector<std::vector<utility::Vector> > points_by_x, points_by_y;
     std::vector<std::vector<utility::Vector> > points;
 
-    Plot(const utility::TimeFunction _composite_function, float _step)
+    PlotFunction(const utility::TimeFunction _composite_function, float _step)
         :composite_function(_composite_function), 
                             step(_step), 
                             size(_composite_function.size)
@@ -108,7 +116,6 @@ struct Plot {
         glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, function_diffuse);
         glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, function_specular);
         glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, &function_shininess);
-
 
         std::vector<std::vector<utility::Vector> > points(1);
         std::vector<utility::Vector> v_empty;
@@ -205,6 +212,85 @@ struct Plot {
                            points_by_y.at(index).at(ind).y);
             }
             glEnd();
+        }
+    }
+};
+
+// TODO: izvuci zajednike f-je
+struct PlotPredicate {
+    const utility::TimePredicate composite_predicate;
+    float step;
+    size_t size;
+
+    bool color_switch = false;
+
+    std::vector<std::vector<utility::Vector> > points;
+
+    PlotPredicate(const utility::TimePredicate _composite_predicate, float _step)
+        :composite_predicate(_composite_predicate), 
+                            step(_step), 
+                            size(_composite_predicate.size)
+        {}
+
+    void plot(float t)
+    {
+        points.clear();
+        points.resize(size);
+
+        for(auto i=0u; i<size; i++)
+            plot_predicate(i, t);
+    }
+
+    void plot_predicate(size_t index, float t) 
+    {
+        auto bound = composite_predicate.intervals.at(index);
+        auto pred = composite_predicate.predicates.at(index);
+
+        float z;
+        auto min_bound = bound.first;
+        auto max_bound = bound.second;
+
+        // Finding feasable points
+        for(float x=min_bound.x; x<=max_bound.x; x+=step)
+        {
+            for(float y=min_bound.y; y<=max_bound.y; y+=step)
+            {
+                for(float z=min_bound.z; z<=max_bound.z; z+=step)
+                {
+                    if(pred(x, y, z, t))
+                        points.at(index).push_back(utility::Vector(x, y, z));
+                }
+            }
+        }
+    }
+
+    void show(bool plot_grid)
+    {
+        for(auto i=0u; i<size; i++)
+            show_predicate(i, plot_grid);
+    }
+
+    void show_predicate(size_t index, bool plot_grid)
+    {
+        GLfloat predicate_ambient[] = {1, 0, 0, 1};
+        GLfloat predicate_diffuse[] = {0, 0, 0, 1};
+        GLfloat predicate_specular[] = {0, 0, 0, 1};
+        GLfloat predicate_shininess = 5;
+
+        glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, predicate_ambient);
+        glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, predicate_diffuse);
+        glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, predicate_specular);
+        glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, &predicate_shininess);
+
+        std::vector<utility::Vector> pred_points = points.at(index);
+
+        for(int i=0; i<pred_points.size(); i++)
+        {
+            predicate_ambient[0] = color_function(pred_points.at(i).y);
+            predicate_ambient[1] = 0;
+            predicate_ambient[2] = 1-color_function(pred_points.at(i).y);
+            glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, predicate_ambient);
+            set_sphere(pred_points.at(i), step);
         }
     }
 };
