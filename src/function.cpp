@@ -75,6 +75,39 @@ utility::vector_time_predicates time_predicates{
 
 utility::TimePredicate time_predicate(default_small_interval, time_predicates);
 
+// PARAMETRIZATION
+utility::vector_time_parameterizations time_parameterizations{
+    [](float u, float v, float t)
+    {
+        return utility::Vector(
+            cos(u)*cos(v), 
+            sin(u), 
+            cos(u)*sin(v));
+    },
+    [](float u, float v, float t)
+    {
+        float R = 5;
+        float r = 0.5;
+        return utility::Vector(
+            cos(v)*(R + r*cos(u)),
+            r*sin(u),
+            sin(v)*(R + r*cos(u))
+        );
+    },
+    [](float u, float v, float t)
+    {
+        float r = 1.2;
+        float a = 0.5;
+        return utility::Vector(
+            r*cos(u),
+            r*sin(u),
+            a*v*((fabs(t) > 0.5) ? fabs(t) : 0.5)
+        );
+    },
+};
+
+utility::TimeParameterization time_parameterization(default_interval, time_parameterizations);
+
 #endif
 
     // {return 2-fabs(x+y)-fabs(y-x);}

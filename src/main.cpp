@@ -33,6 +33,7 @@ float curr_time = 0;
 bool plot_grid = false;
 int function_plot_index = 0;
 int predicate_plot_index = 0;
+int parameteration_plot_index = 0;
 static int plot_type = 1;
 // ~~~~~~~~~~~~~~~~~~~~
 
@@ -42,6 +43,7 @@ Camera camera(utility::Vector(1, 1, 1),
 
 PlotFunction function_plotter(time_function, 0.05);
 PlotPredicate predicate_plotter(time_predicate, 0.05);
+PlotParameterization parameterization_plotter(time_parameterization, 0.05);
 
 int main(int argc, char **argv)
 {
@@ -54,6 +56,7 @@ int main(int argc, char **argv)
     // plot preprocess
     function_plotter.plot(curr_time, function_plot_index);
     predicate_plotter.plot(curr_time, predicate_plot_index);
+    parameterization_plotter.plot(curr_time, parameteration_plot_index);
 
     glutDisplayFunc(on_display);
     glutKeyboardFunc(on_keyboard);
@@ -98,7 +101,7 @@ static void on_keyboard(unsigned char key, int x, int y)
         plot_grid = !plot_grid;
         break;
     case 'k':
-        plot_type = 1 - plot_type;
+        plot_type = (plot_type+1) % 3;
         break;
     case 'n':
         switch (plot_type)
@@ -108,6 +111,9 @@ static void on_keyboard(unsigned char key, int x, int y)
             break;
         case 1:
             predicate_plot_index = (predicate_plot_index + 1) % time_predicate.size;
+            break;
+        case 2:
+            parameteration_plot_index = (parameteration_plot_index + 1) % time_parameterization.size;
             break;
         
         default:
@@ -124,19 +130,44 @@ static void on_display(void)
     set_lights();
     draw_axis();
     draw_grid();
-    if(plot_type == 0)
-        function_plotter.show(plot_grid);
-    else
-        predicate_plotter.show(plot_grid);
+    switch (plot_type)
+    {
+        case 0:
+            function_plotter.show(plot_grid);
+            break;
+        
+        case 1:
+            predicate_plotter.show(plot_grid);
+            break;
+
+        case 2:
+            parameterization_plotter.show(plot_grid);
+            break;
+        default:
+            break;
+    }
 
     glutSwapBuffers();
 }
 
 static void on_timer(int value) {
-    if(plot_type == 0)
-        function_plotter.plot(curr_time, function_plot_index);
-    else
-        predicate_plotter.plot(curr_time, predicate_plot_index);
+    switch (plot_type)
+    {
+        case 0:
+            function_plotter.plot(curr_time, function_plot_index);
+            break;
+        
+        case 1:
+            predicate_plotter.plot(curr_time, predicate_plot_index);
+            break;
+
+        case 2:
+            parameterization_plotter.plot(curr_time, parameteration_plot_index);
+            break;
+        default:
+            break;
+    }
+        
     curr_time += time_sign*time_step;
     if(curr_time >= time_max_value || curr_time <= time_min_value)
         time_sign *= -1; 

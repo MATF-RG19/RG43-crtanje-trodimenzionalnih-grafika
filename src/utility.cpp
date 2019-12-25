@@ -13,16 +13,16 @@ namespace utility
 struct Vector {
     float x, y, z;
 
+    Vector() = default;
     Vector(float _x, float _y, float _z)
         : x(_x), y(_y), z(_z)
         {}
 };
 
 typedef std::vector<std::pair<Vector, Vector> > vector_intervals;
-typedef std::vector<std::function<float (float, float)> > vector_functions;
-
 typedef std::vector<std::function<float (float, float, float)> > vector_time_functions;
 typedef std::vector<std::function<bool (float, float, float, float)> > vector_time_predicates;
+typedef std::vector<std::function<Vector (float, float, float)> > vector_time_parameterizations;
 
 struct TimeFunction{
     vector_intervals intervals;
@@ -48,6 +48,20 @@ struct TimePredicate{
     {
         predicates = _predicates;
         size = predicates.size();
+        intervals = vector_intervals(size, interval);
+    }
+};
+
+struct TimeParameterization{
+    vector_intervals intervals;
+    vector_time_parameterizations parameterizations;
+    size_t size;
+
+    TimeParameterization(std::pair<utility::Vector, utility::Vector>& interval,
+                 vector_time_parameterizations& _parameterizations)
+    {
+        parameterizations = _parameterizations;
+        size = parameterizations.size();
         intervals = vector_intervals(size, interval);
     }
 };
