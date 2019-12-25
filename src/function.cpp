@@ -27,12 +27,12 @@ utility::vector_time_functions time_functions{
     [](float x, float y, float t)
     {
         // piramida
-        return 2-fabs(x+y)-fabs(y-x);
+        return 8-fabs(x+y)-fabs(y-x);
     },
     [](float x, float y, float t)
     {
         // flappy bird
-        return sin(10*(x*x+y*y)/20);
+        return sin(10*(t*x*x+t*y*y)/20);
     },
     [](float x, float y, float t)
     {
@@ -41,13 +41,8 @@ utility::vector_time_functions time_functions{
     },
     [](float x, float y, float t)
     {
-        // deo kruga
-        return ((1 - x*x - y*y) >= 0) ? sqrt(1 - x*x - y*y) : INFEASABLE;
-    },
-    [](float x, float y, float t)
-    {
         // Rastrigin function
-        return 20 + (x*x + y*y) - 10*(cos(2*M_PI*x) + cos(2*M_PI*y));
+        return t/10*(x*x + y*y) - (cos(2*M_PI*x*t) + cos(2*M_PI*y*t));
     },
     [](float x, float y, float t)
     {
@@ -70,6 +65,16 @@ utility::vector_time_predicates time_predicates{
     [](float x, float y, float z, float t)
     {
         return (x*x+(y-2*t)*(y-2*t)+(z-2*t)*(z-2*t) <= fabs(t));
+    },
+    [](float x, float y, float z, float t)
+    {
+        return (x*x + y*y + z*z) >= 1.5;
+    },
+    [](float x, float y, float z, float t)
+    {
+        return (x*x + y*y + z*z) <= 1 
+            && (x*x + y*y + z*z) >= 0.9 
+            && (fabs(x) <= 0.1 || fabs(y) <= 0.1 || fabs(z) <= 0.1);
     },
 };
 
@@ -104,16 +109,16 @@ utility::vector_time_parameterizations time_parameterizations{
             a*v*((fabs(t) > 0.5) ? fabs(t) : 0.5)
         );
     },
+    [](float u, float v, float t)
+    {
+        return utility::Vector(
+            u*t*cos(v),
+            (u >= 0) ? 4-u : -4-u,
+            u*t*sin(v)
+        );
+    },
 };
 
 utility::TimeParameterization time_parameterization(default_interval, time_parameterizations);
 
 #endif
-
-    // {return 2-fabs(x+y)-fabs(y-x);}
-    // {return sin(10*(x*x+y*y)/20);}
-    // deo paralelobioda: {return x*x + y*y;}
-    // deo kruga: {return ((1 - x*x - y*y) >= 0) ? sqrt(1 - x*x - y*y) : INFEASABLE;}
-    // RASTRIGIN FUNCTION: {return 20 + (x*x + y*y) - 10*(cos(2*M_PI*x) + cos(2*M_PI*y))}
-    // fun1: 
-    // fun2: return fabs(x-y*t);

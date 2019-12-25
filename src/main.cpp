@@ -34,16 +34,16 @@ bool plot_grid = false;
 int function_plot_index = 0;
 int predicate_plot_index = 0;
 int parameteration_plot_index = 0;
-static int plot_type = 1;
+static int plot_type = 0;
 // ~~~~~~~~~~~~~~~~~~~~
 
 Camera camera(utility::Vector(1, 1, 1), 
               utility::Vector(0, 0, 0), 
               utility::Vector(0, 1, 0));
 
-PlotFunction function_plotter(time_function, 0.05);
+PlotFunction function_plotter(time_function, 0.1);
 PlotPredicate predicate_plotter(time_predicate, 0.05);
-PlotParameterization parameterization_plotter(time_parameterization, 0.05);
+PlotParameterization parameterization_plotter(time_parameterization, 0.1);
 
 int main(int argc, char **argv)
 {
