@@ -27,7 +27,7 @@ public:
     void update()
     {
         
-        aspect = view_width/view_height;
+        aspect = view_width/(1.0f*view_height);
 
         position.x = cos(alpha)*cos(beta)*distance;
         position.z = cos(alpha)*sin(beta)*distance;
@@ -35,7 +35,7 @@ public:
         
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
-        glViewport((view_width-view_height)/2,0,view_height,view_height);
+        glViewport(0, 0, view_width, view_height);
         gluPerspective(fov, aspect, znear, zfar);
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();

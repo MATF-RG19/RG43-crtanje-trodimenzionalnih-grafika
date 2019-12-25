@@ -9,7 +9,7 @@
 #include <algorithm>
 #include <vector>
 
-#define INFEASABLE 696969
+#define INFEASABLE 696969.0f
 
 void set_normal_and_vertex(utility::Vector& point)
 {
@@ -51,7 +51,7 @@ struct PlotFunction {
                             size(_composite_function.size)
         {}
 
-    void plot(float t)
+    void plot(float t, int index)
     {
         points.clear();
         points_by_x.clear();
@@ -60,8 +60,7 @@ struct PlotFunction {
         points_by_x.resize(size);
         points_by_y.resize(size);
 
-        for(auto i=0u; i<size; i++)
-            plot_function(i, t);
+        plot_function(index, t);
     }
 
     void plot_function(size_t index, float t) 
@@ -232,13 +231,12 @@ struct PlotPredicate {
                             size(_composite_predicate.size)
         {}
 
-    void plot(float t)
+    void plot(float t, int index)
     {
         points.clear();
         points.resize(size);
 
-        for(auto i=0u; i<size; i++)
-            plot_predicate(i, t);
+        plot_predicate(index, t);
     }
 
     void plot_predicate(size_t index, float t) 

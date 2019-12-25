@@ -30,7 +30,10 @@ float curr_time = 0;
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 // Plot values
-bool plot_grid = true;
+bool plot_grid = false;
+int function_plot_index = 0;
+int predicate_plot_index = 0;
+static int plot_type = 1;
 // ~~~~~~~~~~~~~~~~~~~~
 
 Camera camera(utility::Vector(1, 1, 1), 
@@ -38,9 +41,7 @@ Camera camera(utility::Vector(1, 1, 1),
               utility::Vector(0, 1, 0));
 
 PlotFunction function_plotter(time_function, 0.05);
-PlotPredicate predicate_plotter(time_predicate, 0.1);
-
-static int plot_type = 1;
+PlotPredicate predicate_plotter(time_predicate, 0.05);
 
 int main(int argc, char **argv)
 {
@@ -51,8 +52,8 @@ int main(int argc, char **argv)
     glutCreateWindow(argv[0]);
 
     // plot preprocess
-    function_plotter.plot(curr_time);
-    predicate_plotter.plot(curr_time);
+    function_plotter.plot(curr_time, function_plot_index);
+    predicate_plotter.plot(curr_time, predicate_plot_index);
 
     glutDisplayFunc(on_display);
     glutKeyboardFunc(on_keyboard);
@@ -99,6 +100,19 @@ static void on_keyboard(unsigned char key, int x, int y)
     case 'k':
         plot_type = 1 - plot_type;
         break;
+    case 'n':
+        switch (plot_type)
+        {
+        case 0:
+            function_plot_index = (function_plot_index + 1) % time_function.size;
+            break;
+        case 1:
+            predicate_plot_index = (predicate_plot_index + 1) % time_predicate.size;
+            break;
+        
+        default:
+            break;
+        }
     }
 }
 
@@ -120,9 +134,9 @@ static void on_display(void)
 
 static void on_timer(int value) {
     if(plot_type == 0)
-        function_plotter.plot(curr_time);
+        function_plotter.plot(curr_time, function_plot_index);
     else
-        predicate_plotter.plot(curr_time);
+        predicate_plotter.plot(curr_time, predicate_plot_index);
     curr_time += time_sign*time_step;
     if(curr_time >= time_max_value || curr_time <= time_min_value)
         time_sign *= -1; 
