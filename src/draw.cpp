@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <GL/glut.h>
+#include <string>
 #include "colors.h"
 
 // axis constants:

@@ -19,6 +19,7 @@ static void on_keyboard(unsigned char key, int x, int y);
 static void on_display(void);
 static void on_timer(int value);
 static void on_reshape(int width, int height);
+static void show_plot();
 
 // Timer constants and values
 const float time_min_value = -1;
@@ -130,6 +131,14 @@ static void on_display(void)
     set_lights();
     draw_axis();
     draw_grid();
+    show_plot();
+    camera.show_text("test");
+
+    glutSwapBuffers();
+}
+
+static void show_plot()
+{
     switch (plot_type)
     {
         case 0:
@@ -146,8 +155,6 @@ static void on_display(void)
         default:
             break;
     }
-
-    glutSwapBuffers();
 }
 
 static void on_timer(int value) {

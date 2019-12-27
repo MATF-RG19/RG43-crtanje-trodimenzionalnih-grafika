@@ -76,6 +76,13 @@ utility::vector_time_predicates time_predicates{
             && (x*x + y*y + z*z) >= 0.9 
             && (fabs(x) <= 0.1 || fabs(y) <= 0.1 || fabs(z) <= 0.1);
     },
+    [](float x, float y, float z, float t)
+    {
+        float r = 0.2;
+        return (z <= r && z >= -r)
+                && y <= cos(2*M_PI*x+(1+M_PI)/2*0.23) + r
+                && y >= cos(2*M_PI*x+(M_PI+1)/2*0.23) - r;
+    },
 };
 
 utility::TimePredicate time_predicate(default_small_interval, time_predicates);
@@ -117,6 +124,7 @@ utility::vector_time_parameterizations time_parameterizations{
             u*t*sin(v)
         );
     },
+    
 };
 
 utility::TimeParameterization time_parameterization(default_interval, time_parameterizations);
