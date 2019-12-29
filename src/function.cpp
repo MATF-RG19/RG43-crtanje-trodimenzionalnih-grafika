@@ -118,9 +118,9 @@ utility::vector_time_parameterizations time_parameterizations{
     [](float u, float v, float t)
     {
         return utility::Vector(
-            cos(u)*cos(v), 
-            sin(u), 
-            cos(u)*sin(v));
+            2*cos(u)*cos(v), 
+            2*sin(u), 
+            2*cos(u)*sin(v));
     },
     [](float u, float v, float t)
     {

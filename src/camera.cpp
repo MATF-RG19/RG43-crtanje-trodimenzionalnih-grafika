@@ -80,6 +80,7 @@ public:
                 gluOrtho2D(0, view_width, 0, view_height);
 
                 append_line("Commands: ");
+                append_line("Fullscreen: F");
                 append_line("Camera UP: W");
                 append_line("Camera DOWN: D");
                 append_line("Camera LEFT: L");

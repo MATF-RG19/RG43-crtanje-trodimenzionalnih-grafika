@@ -141,15 +141,17 @@ struct PlotFunction {
                 utility::Vector current_point = points.at(i).at(j);
                 utility::Vector next_point = points.at(i+1).at(std::min(j, (int)points.at(i+1).size()-1));
 
-                function_ambient[0] = color_function(current_point.z);
-                function_ambient[1] = 0;
-                function_ambient[2] = 1-color_function(current_point.z);
+                float p = color_function(current_point.z);
+                function_ambient[0] = p;
+                function_ambient[1] = sin(M_PI*p);
+                function_ambient[2] = 1-p;
                 glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, function_ambient);
                 set_normal_and_vertex(current_point);
 
-                function_ambient[0] = color_function(next_point.z);
-                function_ambient[1] = 0;
-                function_ambient[2] = 1-color_function(next_point.z);
+                p = color_function(next_point.z);
+                function_ambient[0] = p;
+                function_ambient[1] = sin(M_PI*p);
+                function_ambient[2] = 1-p;
                 glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, function_ambient);
                 set_normal_and_vertex(next_point);
             }
@@ -283,9 +285,10 @@ struct PlotPredicate {
 
         for(int i=0; i<pred_points.size(); i++)
         {
-            predicate_ambient[0] = color_function(pred_points.at(i).y);
-            predicate_ambient[1] = 0;
-            predicate_ambient[2] = 1-color_function(pred_points.at(i).y);
+            float p = color_function(pred_points.at(i).y);
+            predicate_ambient[0] = p;
+            predicate_ambient[1] = sin(M_PI*p);
+            predicate_ambient[2] = 1-p;
             glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, predicate_ambient);
             set_sphere(pred_points.at(i), step);
         }
@@ -395,15 +398,17 @@ struct PlotParameterization {
                 utility::Vector current_point = points.at(i).at(j);
                 utility::Vector next_point = points.at(i+1).at(std::min(j, (int)points.at(i+1).size()-1));
 
-                parameterization_ambient[0] = color_function(current_point.z);
-                parameterization_ambient[1] = 0;
-                parameterization_ambient[2] = 1-color_function(current_point.z);
+                float p = color_function(current_point.z);
+                parameterization_ambient[0] = p;
+                parameterization_ambient[1] = sin(M_PI*p);
+                parameterization_ambient[2] = 1-p;
                 glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, parameterization_ambient);
                 set_normal_and_vertex(current_point);
 
-                parameterization_ambient[0] = color_function(next_point.z);
-                parameterization_ambient[1] = 0;
-                parameterization_ambient[2] = 1-color_function(next_point.z);
+                p = color_function(next_point.z);
+                parameterization_ambient[0] = p;
+                parameterization_ambient[1] = sin(M_PI*p);
+                parameterization_ambient[2] = 1-p;
                 glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, parameterization_ambient);
                 set_normal_and_vertex(next_point);
             }

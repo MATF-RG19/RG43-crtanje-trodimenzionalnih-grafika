@@ -32,12 +32,16 @@ float curr_time = 0;
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 // Plot values
-bool plot_grid = false;
+static bool plot_grid = false;
 int function_plot_index = 0;
 int predicate_plot_index = 0;
 int parameteration_plot_index = 0;
 static int plot_type = 0;
 // ~~~~~~~~~~~~~~~~~~~~
+
+// Window values
+static bool is_fullscreen = false;
+// ~~~~~~~~~~~~~~~~~~
 
 Camera camera(utility::Vector(1, 1, 1), 
               utility::Vector(0, 0, 0), 
@@ -67,7 +71,6 @@ int main(int argc, char **argv)
     glutTimerFunc(TIMER_INTERVAL, on_timer, TIMER_ID);
 
     glClearColor(GRAY, 0);
-    glutFullScreen();
 
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_NORMALIZE);
@@ -120,10 +123,26 @@ static void on_keyboard(unsigned char key, int x, int y)
         case 2:
             parameteration_plot_index = (parameteration_plot_index + 1) % time_parameterization.size;
             break;
-        
         default:
             break;
         }
+        break;
+    case 'f':
+        if(!is_fullscreen)
+        {
+            glutFullScreen();
+            is_fullscreen = true;
+        }
+        else
+        {
+            glutPositionWindow(0,0);
+            glutReshapeWindow(1000, 800);
+            is_fullscreen = false;
+        }
+        break;
+
+    default:
+        break;
     }
 }
 
