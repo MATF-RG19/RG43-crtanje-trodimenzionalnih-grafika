@@ -33,7 +33,7 @@ void set_sphere(utility::Vector& point, float step)
     glPopMatrix();
 }
 
-inline float color_function(float value){return 2*(atan(value))/M_PI;}
+inline float color_function(float value){return (atan(value))/M_PI + 0.5;}
 
 struct PlotFunction {
     const utility::TimeFunction composite_function;
