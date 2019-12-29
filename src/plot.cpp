@@ -35,6 +35,13 @@ void set_sphere(utility::Vector& point, float step)
 
 inline float color_function(float value){return (atan(value))/M_PI + 0.5;}
 
+void set_ambient_color_by_p(GLfloat ambient[], float p)
+{
+    ambient[0] = p;
+    ambient[1] = sin(M_PI*p);
+    ambient[2] = 1-p;
+}
+
 struct PlotFunction {
     const utility::TimeFunction composite_function;
     float step;
@@ -120,7 +127,7 @@ struct PlotFunction {
         std::vector<utility::Vector> v_empty;
         float prev_x = -100000;
 
-
+        // splitting points in vector of lines by x-coordinate
         for(int i=0; i<points_by_x.size(); i++)
         {
             for(int j=0; j<points_by_x.at(i).size(); j++)
@@ -133,6 +140,7 @@ struct PlotFunction {
             }
         }
 
+        // function triangulation
         for(int i=0; i<points.size()-1; i++)
         {
             glBegin(GL_TRIANGLE_STRIP);
@@ -142,16 +150,12 @@ struct PlotFunction {
                 utility::Vector next_point = points.at(i+1).at(std::min(j, (int)points.at(i+1).size()-1));
 
                 float p = color_function(current_point.z);
-                function_ambient[0] = p;
-                function_ambient[1] = sin(M_PI*p);
-                function_ambient[2] = 1-p;
+                set_ambient_color_by_p(function_ambient, p);
                 glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, function_ambient);
                 set_normal_and_vertex(current_point);
 
                 p = color_function(next_point.z);
-                function_ambient[0] = p;
-                function_ambient[1] = sin(M_PI*p);
-                function_ambient[2] = 1-p;
+                set_ambient_color_by_p(function_ambient, p);
                 glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, function_ambient);
                 set_normal_and_vertex(next_point);
             }
@@ -172,7 +176,7 @@ struct PlotFunction {
         glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, grid_specular);
         glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, &grid_shininess);
 
-        // plot y-lines
+        // plot y-lines(wiki)
         glColor3f(1, 1, 1);
         size_t ind = 0;
         while(ind < points_by_x.at(index).size())
@@ -194,7 +198,7 @@ struct PlotFunction {
             glEnd();
         }
 
-        // plot x-lines
+        // plot x-lines(wiki)
         ind = 0;
         while(ind < points_by_y.at(index).size())
         {
@@ -283,12 +287,11 @@ struct PlotPredicate {
 
         std::vector<utility::Vector> pred_points = points.at(index);
 
+        // "Replacing" points with cubes
         for(int i=0; i<pred_points.size(); i++)
         {
             float p = color_function(pred_points.at(i).y);
-            predicate_ambient[0] = p;
-            predicate_ambient[1] = sin(M_PI*p);
-            predicate_ambient[2] = 1-p;
+            set_ambient_color_by_p(predicate_ambient, p);
             glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, predicate_ambient);
             set_sphere(pred_points.at(i), step);
         }
@@ -332,7 +335,7 @@ struct PlotParameterization {
         auto min_bound = bound.first;
         auto max_bound = bound.second;
 
-        // Finding feasable points
+        // Finding feasable points (x -> y)
         for(float x=min_bound.x; x<=max_bound.x; x+=step)
         {
             for(float y=min_bound.y; y<=max_bound.y; y+=step)
@@ -344,6 +347,7 @@ struct PlotParameterization {
             }
         }
 
+        // Finding feasable points (y -> x), needed for grid
         for(float y=min_bound.y; y<=max_bound.y; y+=step)
         {
             for(float x=min_bound.x; x<=max_bound.x; x+=step)
@@ -399,16 +403,12 @@ struct PlotParameterization {
                 utility::Vector next_point = points.at(i+1).at(std::min(j, (int)points.at(i+1).size()-1));
 
                 float p = color_function(current_point.z);
-                parameterization_ambient[0] = p;
-                parameterization_ambient[1] = sin(M_PI*p);
-                parameterization_ambient[2] = 1-p;
+                set_ambient_color_by_p(parameterization_ambient, p);
                 glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, parameterization_ambient);
                 set_normal_and_vertex(current_point);
 
                 p = color_function(next_point.z);
-                parameterization_ambient[0] = p;
-                parameterization_ambient[1] = sin(M_PI*p);
-                parameterization_ambient[2] = 1-p;
+                set_ambient_color_by_p(parameterization_ambient, p);
                 glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, parameterization_ambient);
                 set_normal_and_vertex(next_point);
             }
@@ -429,7 +429,7 @@ struct PlotParameterization {
         glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, grid_specular);
         glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, &grid_shininess);
 
-        // plot y-lines
+        // plot y-lines(wiki)
         glColor3f(1, 1, 1);
         size_t ind = 0;
         while(ind < points_by_x.at(index).size())
@@ -451,7 +451,7 @@ struct PlotParameterization {
             glEnd();
         }
 
-        // plot x-lines
+        // plot x-lines(wiki)
         ind = 0;
         while(ind < points_by_y.at(index).size())
         {

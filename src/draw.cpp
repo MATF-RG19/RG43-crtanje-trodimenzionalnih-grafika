@@ -32,19 +32,19 @@ void draw_axis()
         glVertex3f(0, 0, 0);
     glEnd();
 
-    // x-osa
+    // x-axis
     glBegin(GL_LINES);
         glVertex3f(-axis_length, 0, 0);
         glVertex3f(axis_length, 0, 0);
     glEnd();
 
-    // y-osa
+    // y-axis
     glBegin(GL_LINES);
         glVertex3f(0, -axis_length, 0);
         glVertex3f(0, axis_length, 0);
     glEnd();
 
-    // z-osa
+    // z-axis
     glBegin(GL_LINES);
         glVertex3f(0, 0, -axis_length);
         glVertex3f(0, 0, axis_length);

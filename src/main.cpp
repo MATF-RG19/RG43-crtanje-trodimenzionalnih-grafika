@@ -87,16 +87,16 @@ static void on_keyboard(unsigned char key, int x, int y)
         exit(0);
         break;
     
-    case 'w': //UP
+    case 'w': 
         camera.rotate_up();
         break;
-    case 's': //DOWN
+    case 's': 
         camera.rotate_down();
         break;
-    case 'd': //RIGHT
+    case 'd':
         camera.rotate_right();
         break;
-    case 'a': //LEFT
+    case 'a': 
         camera.rotate_left();
         break;
     case 'z':
