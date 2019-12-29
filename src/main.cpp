@@ -20,6 +20,7 @@ static void on_display(void);
 static void on_timer(int value);
 static void on_reshape(int width, int height);
 static void show_plot();
+static std::string get_plot_name();
 
 // Timer constants and values
 const float time_min_value = -1;
@@ -50,7 +51,7 @@ int main(int argc, char **argv)
 {
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
-    glutInitWindowSize(800, 800);
+    glutInitWindowSize(1000, 800);
     glutInitWindowPosition(100, 100);
     glutCreateWindow(argv[0]);
 
@@ -58,6 +59,7 @@ int main(int argc, char **argv)
     function_plotter.plot(curr_time, function_plot_index);
     predicate_plotter.plot(curr_time, predicate_plot_index);
     parameterization_plotter.plot(curr_time, parameteration_plot_index);
+    camera.textures_init();
 
     glutDisplayFunc(on_display);
     glutKeyboardFunc(on_keyboard);
@@ -65,6 +67,7 @@ int main(int argc, char **argv)
     glutTimerFunc(TIMER_INTERVAL, on_timer, TIMER_ID);
 
     glClearColor(GRAY, 0);
+    glutFullScreen();
 
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_NORMALIZE);
@@ -73,6 +76,7 @@ int main(int argc, char **argv)
 
     return 0;
 }
+
 static void on_keyboard(unsigned char key, int x, int y)
 {
     switch (key) {
@@ -132,7 +136,8 @@ static void on_display(void)
     draw_axis();
     draw_grid();
     show_plot();
-    camera.show_text("test");
+    camera.show_text(plot_type, get_plot_name());
+    camera.show_ui_background();
 
     glutSwapBuffers();
 }
@@ -154,6 +159,29 @@ static void show_plot()
             break;
         default:
             break;
+    }
+}
+
+static std::string get_plot_name()
+{
+    switch (plot_type)
+    {
+        case 0:
+            if(function_plot_index >= time_function_names.size())
+                return "";
+            return time_function_names.at(function_plot_index);
+        
+        case 1:
+            if(predicate_plot_index >= time_predicate_names.size())
+                return "";
+            return time_predicate_names.at(predicate_plot_index);
+
+        case 2:
+            if(parameteration_plot_index >= time_parametrization_names.size())
+                return "";
+            return time_parametrization_names.at(parameteration_plot_index);
+        default:
+            return "";
     }
 }
 

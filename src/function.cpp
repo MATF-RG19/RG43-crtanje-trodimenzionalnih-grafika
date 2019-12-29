@@ -58,6 +58,14 @@ utility::vector_time_functions time_functions{
     },
 };
 
+std::vector<std::string> time_function_names{
+    "Pyramid",
+    "Flappy Bird",
+    "Paralleloid",
+    "Rastrigin",
+    "Min Line",
+    "Fatty"
+};
 utility::TimeFunction time_function(default_interval, time_functions);
 
 // PREDICATES
@@ -84,11 +92,29 @@ utility::vector_time_predicates time_predicates{
                 && y >= cos(2*M_PI*x+(M_PI+1)/2*0.23) - r;
     },
 };
+std::vector<std::string> time_predicate_names{
+    "Disappearing Sphere",
+    "Cube \\ Sphere",
+    "Circles XYZ",
+    "Letter W",
+};
 
 utility::TimePredicate time_predicate(default_small_interval, time_predicates);
 
 // PARAMETRIZATION
 utility::vector_time_parameterizations time_parameterizations{
+    [](float u, float v, float t)
+    {
+        float R = 5;
+        float r = 0.5;
+        if(v >= M_PI/6 + 2*M_PI*t || v <= -M_PI/6  + 2*M_PI*t)
+            return utility::Vector(INFEASABLE, 0, 0);
+        return utility::Vector(
+            cos(v)*(R + r*cos(u)),
+            r*sin(u),
+            sin(v)*(R + r*cos(u))
+        );
+    },
     [](float u, float v, float t)
     {
         return utility::Vector(
@@ -124,7 +150,13 @@ utility::vector_time_parameterizations time_parameterizations{
             u*t*sin(v)
         );
     },
-    
+};
+std::vector<std::string> time_parametrization_names{
+    "Experiment 007",
+    "Sphere",
+    "Torus",
+    "Cylinder",
+    "Double Cone",
 };
 
 utility::TimeParameterization time_parameterization(default_interval, time_parameterizations);

@@ -334,7 +334,10 @@ struct PlotParameterization {
         {
             for(float y=min_bound.y; y<=max_bound.y; y+=step)
             {
-                points_by_y.at(index).push_back(func(x, y, t));
+                auto v = func(x, y, t);
+                if(v.x == INFEASABLE)
+                    continue;
+                points_by_y.at(index).push_back(v);
             }
         }
 
@@ -342,7 +345,10 @@ struct PlotParameterization {
         {
             for(float x=min_bound.x; x<=max_bound.x; x+=step)
             {
-                points_by_x.at(index).push_back(func(x, y, t));
+                auto v = func(x, y, t);
+                if(v.x == INFEASABLE)
+                    continue;
+                points_by_x.at(index).push_back(v);
             }
         }
     }

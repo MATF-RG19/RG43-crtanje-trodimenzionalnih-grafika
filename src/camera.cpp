@@ -2,10 +2,16 @@
 #include <GL/glut.h>
 #include <iostream>
 #include <cmath>
+#include "image.c"
+#include "utility.cpp"
 
 #define _USE_MATH_DEFINES
 
-#include "utility.cpp"
+// File names
+char* FILENAME1 = (char*)"../img/background.bmp";
+char* FILENAME0 = (char*)"../img/math.bmp";
+
+static GLuint names[2];
 
 class Camera {
 public:
@@ -45,7 +51,7 @@ public:
     inline void set_view_height(int height) { view_height = height; }
 
     void output(float x, float y, void * font, std::string s){
-        glColor3f(0, 0, 0);
+        glColor3f(BLACK);
         glRasterPos2f(x, y);
         int len, i;
         len = s.size();
@@ -61,9 +67,9 @@ public:
         text_depth++;
     }
 
-    void show_text(std::string text)
+    void show_text(int plot_type, std::string plot_name)
     {
-        text_depth = 3;
+        text_depth = 1;
         glDisable(GL_LIGHTING);
         glMatrixMode(GL_MODELVIEW);
         glPushMatrix();
@@ -71,7 +77,7 @@ public:
             glMatrixMode(GL_PROJECTION);
             glPushMatrix();
                 glLoadIdentity();
-                gluOrtho2D(0,800,0,800);
+                gluOrtho2D(0, view_width, 0, view_height);
 
                 append_line("Commands: ");
                 append_line("Camera UP: W");
@@ -84,11 +90,132 @@ public:
                 append_line("Switch plotter: K");
                 append_line("Switch function: N");
 
+                append_line("");
+                append_line("");
+                append_line("");
+                append_line("Plot Type:");
+                append_line("   " + plot_type_str(plot_type));
+                append_line("Plot Name:");
+                append_line("   " + plot_name);
+
             glPopMatrix();
             glMatrixMode(GL_MODELVIEW);
         glPopMatrix();
 
         glEnable(GL_LIGHTING);
+    }
+
+    std::string plot_type_str(int plot_type)
+    {
+        switch (plot_type)
+        {
+            case 0:
+                return "Function Plotter";
+            case 1:
+                return "Predicate Plotter";
+            case 2:
+                return "Parametrization Plotter";
+            default:
+                break;
+        }
+    }
+
+    void textures_init()
+    {
+        Image * image;
+
+        glEnable(GL_TEXTURE_2D);
+
+        glTexEnvf(GL_TEXTURE_ENV,
+                GL_TEXTURE_ENV_MODE,
+                GL_REPLACE);
+
+        image = image_init(0, 0);
+
+        image_read(image, FILENAME0);
+
+        glGenTextures(2, names);
+
+        glBindTexture(GL_TEXTURE_2D, names[0]);
+        glTexParameteri(GL_TEXTURE_2D,
+                        GL_TEXTURE_WRAP_S, GL_CLAMP);
+        glTexParameteri(GL_TEXTURE_2D,
+                        GL_TEXTURE_WRAP_T, GL_CLAMP);
+        glTexParameteri(GL_TEXTURE_2D,
+                        GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D,
+                        GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB,
+                    image->width, image->height, 0,
+                    GL_RGB, GL_UNSIGNED_BYTE, image->pixels);
+
+        image_read(image, FILENAME1);
+
+        glBindTexture(GL_TEXTURE_2D, names[1]);
+        glTexParameteri(GL_TEXTURE_2D,
+                        GL_TEXTURE_WRAP_S, GL_CLAMP);
+        glTexParameteri(GL_TEXTURE_2D,
+                        GL_TEXTURE_WRAP_T, GL_CLAMP);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB,
+                    image->width, image->height, 0,
+                    GL_RGB, GL_UNSIGNED_BYTE, image->pixels);
+
+        glBindTexture(GL_TEXTURE_2D, 0);
+
+        image_done(image);
+    }
+
+    void show_ui_background()
+    {
+        glBindTexture(GL_TEXTURE_2D, names[1]);
+        glMatrixMode(GL_MODELVIEW);
+        glPushMatrix();
+            glLoadIdentity();
+            glMatrixMode(GL_PROJECTION);
+            glPushMatrix();
+                glLoadIdentity();
+
+                glBegin(GL_QUADS);
+                    glNormal3f(0, 0, 1);
+
+                    glTexCoord2f(0, 1);
+                    glVertex3f(-ui_size*aspect, -1, 0.01);
+
+                    glTexCoord2f(0, 0);
+                    glVertex3f(-1, -1, 0.01);
+
+                    glTexCoord2f(1, 0);
+                    glVertex3f(-1, 1, 0.01);
+
+                    glTexCoord2f(1, 1);
+                    glVertex3f(-ui_size*aspect, 1, 0);
+                glEnd();
+
+                glBindTexture(GL_TEXTURE_2D, names[0]);
+                glBegin(GL_QUADS);
+                    glNormal3f(0, 0, 1);
+
+                    glNormal3f(0, 0, 1);
+
+                    glTexCoord2f(0, 1);
+                    glVertex3f(-ui_size*aspect, -1, 0);
+
+                    glTexCoord2f(0, 0);
+                    glVertex3f(-1, -1, 0);
+
+                    glTexCoord2f(1, 0);
+                    glVertex3f(-1, -0.5, 0);
+
+                    glTexCoord2f(1, 1);
+                    glVertex3f(-ui_size*aspect, -0.5, 0);
+                glEnd();
+
+            glPopMatrix();
+            glMatrixMode(GL_MODELVIEW);
+        glPopMatrix();
+        glBindTexture(GL_TEXTURE_2D, 0);
     }
 
 private:
@@ -100,7 +227,7 @@ private:
     float view_height = 1;
 
 
-    float distance = 3;
+    float distance = 7;
     float alpha = M_PI/4;
     float beta = M_PI/4;
     float rotation_speed = 0.01;
@@ -113,7 +240,7 @@ private:
     // text
     int text_distance = 24;
     int text_depth = 2;
-};
 
-// parser ???
-// teksture i tekst za ui
+    // textures
+    float ui_size = 0.35;
+};
