@@ -1,7 +1,7 @@
 # RG43-GraphingCalculator3d
 
 ## Description:
-    Graph 3D plotter inspired by Desmos 2D graphing calculator. Program can plot any function with two parameters, surface areas or 3D predicates.
+Graph 3D plotter inspired by Desmos 2D graphing calculator. Program can plot any function with two parameters, surface areas or 3D predicates.
 
 ## Installation and startup (LINUX)
     cd src
