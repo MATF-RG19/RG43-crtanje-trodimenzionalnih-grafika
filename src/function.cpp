@@ -21,6 +21,10 @@ std::pair<utility::Vector, utility::Vector> default_interval =
 std::pair<utility::Vector, utility::Vector> default_small_interval = 
     std::make_pair(tmp_bound_min_small, tmp_bound_max_small);
 
+float sign(float x)
+{
+    return x/fabs(x);
+}
 
 // FUNCTIONS
 utility::vector_time_functions time_functions{
@@ -56,6 +60,22 @@ utility::vector_time_functions time_functions{
         float c3 = 100.0f;
         return -std::exp(0.5*t*(std::cos(c3*t*x*M_PI/180)+std::cos(c3*t*y*M_PI/180)))+c1*t+1;
     },
+    [](float x, float y, float t)
+    {
+        return (-sign(1-(x*x+y*y)) + sign(1-(x*x/3+y*y/3)));
+    },
+    [](float x, float y, float t)
+    {
+        return 1.5*sign(x-1+fabs(y*2))/3 + sign(x-5+fabs(y*2))/3;
+    },
+    [](float x, float y, float t)
+    {
+        return t*(sign(1-(x*x+y*y)) + sign(1-(x*x/3+y*y/3)));
+    },
+    [](float x, float y, float t)
+    {
+        return 8*fabs(t)*sign(t)*(sign(x*y) * sign((1-81*x*x+81*y*y))/9);
+    },
 };
 
 std::vector<std::string> time_function_names{
@@ -64,7 +84,12 @@ std::vector<std::string> time_function_names{
     "Paralleloid",
     "Rastrigin",
     "Min Line",
-    "Fatty"
+    "Fatty",
+    "Letter O",
+    "Letter V",
+    "Top Hat",
+    "Windmill",
+    
 };
 utility::TimeFunction time_function(default_interval, time_functions);
 
@@ -150,6 +175,23 @@ utility::vector_time_parameterizations time_parameterizations{
             u*t*sin(v)
         );
     },
+    [](float u, float v, float t)
+    {
+        if(v >= M_PI/2 + 2*M_PI*t || v <= -M_PI/2  + 2*M_PI*t)
+            return utility::Vector(INFEASABLE, 0, 0);
+        return utility::Vector(
+            2*cos(u)*cos(v), 
+            2*sin(u), 
+            2*cos(u)*sin(v));
+    },
+    [](float u, float v, float t)
+    {
+        return utility::Vector(
+            3*cos(2*t)+cos(u)*cos(v), 
+            3*t+sin(u), 
+            3*sin(4*t)+cos(u)*sin(v));
+    },
+
 };
 std::vector<std::string> time_parametrization_names{
     "Experiment 007",
@@ -157,6 +199,8 @@ std::vector<std::string> time_parametrization_names{
     "Torus",
     "Cylinder",
     "Double Cone",
+    "Rotating Sphere",
+    "Jumping Sphere"
 };
 
 utility::TimeParameterization time_parameterization(default_interval, time_parameterizations);

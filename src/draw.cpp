@@ -9,12 +9,27 @@ static float axis_length = 1000;
 // grid constants:
 static float grid_size = 100;
 static float grid_step = 1;
+static float alpha = 0.8;
+
+void draw_axis();
+void draw_grid();
+
+void draw_axis_and_grid(bool draw)
+{
+    if(!draw)
+        return;
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        draw_axis();
+        draw_grid();
+    glDisable(GL_BLEND);
+}
 
 void draw_axis()
 {
-    GLfloat ambient[] = {1, 0, 0, 1};
-    GLfloat diffuse[] = {1, 0, 0, 1};
-    GLfloat specular[] = {0, 0, 0, 1};
+    GLfloat ambient[] = {1, 0, 0, alpha};
+    GLfloat diffuse[] = {1, 0, 0, alpha};
+    GLfloat specular[] = {0, 0, 0, alpha};
     GLfloat shininess = 5;
 
     glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, ambient);
@@ -56,9 +71,9 @@ void draw_axis()
 
 void draw_grid()
 {
-    GLfloat ambient[] = {0.4, 0.4, 0.4, 1};
-    GLfloat diffuse[] = {0, 0, 0, 1};
-    GLfloat specular[] = {0, 0, 0, 1};
+    GLfloat ambient[] = {0.4, 0.4, 0.4, alpha};
+    GLfloat diffuse[] = {0, 0, 0, alpha};
+    GLfloat specular[] = {0, 0, 0, alpha};
     GLfloat shininess = 5;
 
     glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, ambient);

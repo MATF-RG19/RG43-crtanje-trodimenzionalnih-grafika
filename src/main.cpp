@@ -32,6 +32,7 @@ float curr_time = 0;
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 // Plot values
+static bool plot_axis_and_plane_grids = true;
 static bool plot_grid = false;
 int function_plot_index = 0;
 int predicate_plot_index = 0;
@@ -140,7 +141,9 @@ static void on_keyboard(unsigned char key, int x, int y)
             is_fullscreen = false;
         }
         break;
-
+    case 'q':
+        plot_axis_and_plane_grids = !plot_axis_and_plane_grids;
+        break;
     default:
         break;
     }
@@ -152,8 +155,7 @@ static void on_display(void)
 
     camera.update();
     set_lights();
-    draw_axis();
-    draw_grid();
+    draw_axis_and_grid(plot_axis_and_plane_grids);
     show_plot();
     camera.show_text(plot_type, get_plot_name());
     camera.show_ui_background();

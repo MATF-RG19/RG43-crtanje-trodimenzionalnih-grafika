@@ -4,6 +4,7 @@
 #include <cmath>
 #include "image.c"
 #include "utility.cpp"
+#include "colors.h"
 
 #define _USE_MATH_DEFINES
 
@@ -81,6 +82,7 @@ public:
 
                 append_line("Commands: ");
                 append_line("Fullscreen: F");
+                append_line("Show axis grid: Q");
                 append_line("Camera UP: W");
                 append_line("Camera DOWN: D");
                 append_line("Camera LEFT: L");
@@ -228,7 +230,7 @@ private:
     float view_height = 1;
 
 
-    float distance = 7;
+    float distance = 15;
     float alpha = M_PI/4;
     float beta = M_PI/4;
     float rotation_speed = 0.01;
