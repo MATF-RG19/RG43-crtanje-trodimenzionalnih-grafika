@@ -76,6 +76,10 @@ utility::vector_time_functions time_functions{
     {
         return 8*fabs(t)*sign(t)*(sign(x*y) * sign((1-81*x*x+81*y*y))/9);
     },
+    [](float x, float y, float t)
+    {
+        return std::sin(x*x+y*y);
+    }
 };
 
 std::vector<std::string> time_function_names{
@@ -89,7 +93,7 @@ std::vector<std::string> time_function_names{
     "Letter V",
     "Top Hat",
     "Windmill",
-    
+    "Tinon"
 };
 utility::TimeFunction time_function(default_interval, time_functions);
 
@@ -121,7 +125,7 @@ std::vector<std::string> time_predicate_names{
     "Disappearing Sphere",
     "Cube \\ Sphere",
     "Circles XYZ",
-    "Letter W",
+    "Letter W"
 };
 
 utility::TimePredicate time_predicate(default_small_interval, time_predicates);
@@ -190,8 +194,7 @@ utility::vector_time_parameterizations time_parameterizations{
             3*cos(2*t)+cos(u)*cos(v), 
             3*t+sin(u), 
             3*sin(4*t)+cos(u)*sin(v));
-    },
-
+    }
 };
 std::vector<std::string> time_parametrization_names{
     "Experiment 007",
